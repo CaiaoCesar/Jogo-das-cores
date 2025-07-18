@@ -1,0 +1,60 @@
+JS: D.O.M
+
+# ✍️ Instruções para a atividade
+
+O objetivo desta atividade é que você ponha em prática o que você pode aprender da manipulação do D.O.M. com JavaScript até aqui, criando um jogo.
+
+### 📁 Estrutura dos arquivos
+
+1. Crie um novo repositório público no GitHub
+    - O README.md do repositório deve conter:
+        - Seu nome completo
+        - Regras do Jogo - Destaque as variações da sua versão solicitadas nas [**Restrições**](https://www.notion.so/Restri-es-22e06b94b9cb80498501e54a72ed1fd7?pvs=21)
+        - Como jogar
+        - Como executar
+        - Créditos - Fontes de referência utilizadas
+        - Licença do projeto
+    - Todo o código JS do seu projeto deve estar em um único arquivo `script.js` dentro de uma pasta com o nome `js`.
+    - Caso tenha imagens todas as suas imagens dentro da pasta `images`.
+    - Todo o código CSS deve estar no arquivo `styles.css` dentro de uma pasta com o nome `css`.
+2. O projeto deverá possuir uma única página `index.html`
+
+### 🕹️ O jogo - Desafio das cores
+
+**Regras do Jogo**
+
+- Preparação: O jogo exibi uma grade de quadrados coloridos.
+- Ao iniciar o jogo, o jogador tem um tempo para clicar na cor indicada.
+- Ao clicar em um quadrado uma nova cor é indicada e as cores do “grid” alternam, até o jogo terminar.
+- A cada acerto, a pontuação aumenta. Ao errar a pontuação diminui.
+- Veja um exemplo da jogabilidade abaixo
+    
+    [Screen Recording 2025-07-11 at 22.09.20.mov](attachment:821f8dfd-3582-490f-87d9-c56da2a47d2f:Screen_Recording_2025-07-11_at_22.09.20.mov)
+    
+
+**Restrições**
+
+1. A interação dos jogadores deve ser via tela, ou seja, não se deve utilizar o console do navegador para que seja possível jogar.
+2. O jogador deve apertar um botão “Jogar” para iniciar.
+3. Você deve definir a quantidade de cores e tamanho do “grid” do jogo. 
+4. Você deve definir a forma de calcular o aumento ou desconto da pontuação. 
+5. A cada clique a pontuação do jogador deve ser atualizada.
+6. Você deve definir os critérios do tempo no jogo.
+7. Você deve definir como o jogo termina. 
+8. Ao finalizar o jogo informe:
+    - O nome do jogador
+    - A pontuação
+    - Dê a opção para o jogador jogar novamente.
+
+### 🏁 Entregando a atividade
+
+Responda a atividade **#09 no Classroom** com:
+
+- O link para o repositório.
+- O link com o endereço do seu projeto publicado na internet.
+
+### 🧐 BÔNUS
+
+- Implemente o **Ranking** dos melhores jogadores.
+– Defina um critério para avaliar os melhores jogadores.
+– Armazene os resultados.
