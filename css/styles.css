@@ -1,5 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Zen+Dots&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jersey+15&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Maps&display=swap');
+
 .container{
-   background-color: slategrey;
+    margin: 0 auto;
+    padding: 0;
+    background-color: rgb(6, 43, 50);
+    color: silver;
+    font-size: 1.5em;
+    justify-content: center;
+    text-align: center;
+    font-family: "Bungee Spice", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+h1{
+    font-size: 3em;
+    font-family: "Rubik Maps", system-ui;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.score, .timer{
+    font-size: 1em;
+    font-family: "Zen Dots", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.chosen-color{
+    font-family: "Jersey 15", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 .game-arena{
@@ -11,5 +45,10 @@
 
 #grid1, #grid2,  #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9{
     background-color:rgb(6, 53, 54);
-    border: 2px solid gray;
+    border: 10px solid rgb(5, 5, 5);
+    border-radius: 10px;
+}
+
+.azul{
+    color: blue;
 }
