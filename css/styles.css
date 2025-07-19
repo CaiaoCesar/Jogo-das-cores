@@ -1,3 +1,7 @@
+.container{
+   background-color: slategrey;
+}
+
 .game-arena{
     display: grid;
     grid-template-columns: 130px 130px 130px;
@@ -8,5 +12,4 @@
 #grid1, #grid2,  #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9{
     background-color:rgb(6, 53, 54);
     border: 2px solid gray;
-
 }
