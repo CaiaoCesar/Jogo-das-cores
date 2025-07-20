@@ -66,6 +66,16 @@ h1{
     border-radius: 10px;
 }
 
+.selected{
+    border: 12px solid white;
+    transform: translate(-2px);
+}
+
+.selected:hover {
+    border-color: darkgoldenrod;
+    transform: translateX(-2px) scale(1.02);
+}
+
 .azul{
     color: blue;
 }
