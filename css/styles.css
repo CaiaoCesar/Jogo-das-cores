@@ -3,6 +3,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Maps&display=swap');
 
+:root {
+    --amarelo: yellow;
+    --azul: blue; 
+    --azulEscuro: darkblue;
+    --vermelho: red; 
+    --preto: black; 
+    --marrom: brown; 
+    --verde: green; 
+    --verdeEscuro: darkgreen; 
+    --laranja: orange; 
+    --branco: white;
+    --cinza: gray; 
+    --roxo: purple; 
+    --rosa: pink; 
+    
+}
+
 .container{
     margin: 0 auto;
     padding: 0;
