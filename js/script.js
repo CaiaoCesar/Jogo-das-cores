@@ -2,6 +2,7 @@
 let pontuacao = 0;
 let tempoRestante = 10; // Tempo inicial em segundos
 let intervalo = null;
+let corAlvo = null;
 
 // Elementos DOM
 const displayPontuacao = document.querySelector('.score h2');
@@ -9,6 +10,30 @@ const displayTempo = document.querySelector('.timer h2');
 const displayCorAlvo = document.querySelector('.chosen-color h2');
 
 const grids = [...document.querySelectorAll("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9")];
+
+const cores = ['yellow', 'blue', 'darkblue', 'red', 'black', 'brown', 'green', 'darkgreen', 'orange', 'white', 'gray', 'purple', 'pink'] 
+
+const traducoes = {
+    'yellow': 'amarelo',
+    'blue': 'azul',
+    'darkblue': 'azul escuro',
+    'red': 'vermelho',
+    'black': 'preto',
+    'brown': 'marrom',
+    'green': 'verde',
+    'darkgreen': 'verde escuro',
+    'orange': 'laranja',
+    'white': 'branco',
+    'gray': 'cinza',
+    'purple': 'roxo',
+    'pink': 'rosa'
+};
+
+function sorteiaCor(){
+    const misturaCores = [...cores].sort(() => Math.random() - 0.5);
+    corAlvo = misturaCores[0];
+    return corAlvo;
+}
 
 // Contador regressivo
 function iniciarContador() {
@@ -29,6 +54,16 @@ function iniciarContador() {
 function atualizarDisplay() {
     displayTempo.textContent = `Tempo Restante: ${tempoRestante.toFixed(1)}s`;
     displayPontuacao.textContent = `Pontuação: ${pontuacao}`;
+    
+    const nomeCorTraduzido = traducoes[corAlvo] || corAlvo;
+    displayCorAlvo.textContent = `A cor escolhida agora é: ${nomeCorTraduzido}`;
+    displayCorAlvo.style.color = corAlvo;
+
+    if (['white', 'yellow', 'pink'].includes(corAlvo)) {
+        displayCorAlvo.style.textShadow = '1px 1px 2px rgba(0,0,0,0.8)';
+    } else {
+        displayCorAlvo.style.textShadow = 'none';
+    }
 }
 
 
@@ -65,6 +100,7 @@ function salvaPontuação(){
 
 function iniciarJogo(){
     iniciarContador();
+    corAlvo = sorteiaCor();
     reconheceClick();
     atualizarDisplay();
     atualizaRanking();
@@ -78,7 +114,6 @@ function fimDeJogo() {
     iniciarJogo();
 }
 
-document.addEventListener('DOMContentLoaded', iniciarJogo);
 
 /*
 const listaCores = [...document.querySelectorAll(":root")];
