@@ -5,6 +5,7 @@ let intervalo = null;
 let corAlvo = null;
 let jogoAtivo = false;
 let playerName = "";
+let btnReiniciar = null;
 
 // Elementos DOM
 const displayPontuacao = document.querySelector('.score h2');
@@ -12,6 +13,7 @@ const displayTempo = document.querySelector('.timer h2');
 const displayCorAlvo = document.querySelector('.chosen-color h2');
 const grids = [...document.querySelectorAll("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9")];
 
+// Dados das Cores
 const cores = ['yellow', 'blue', 'red', 'brown', 'green', 'orange', 'white', 'gray', 'pink'];
 
 const traducoes = {
@@ -26,6 +28,7 @@ const traducoes = {
     'pink': 'rosa'
 };
 
+//Funções do Jogo
 function sorteiaCor() {
     return cores[Math.floor(Math.random() * cores.length)];
 }
@@ -101,11 +104,6 @@ function reconheceClick() {
             if (corClicada === corAlvo) {
                 pontuacao += 10;
                 elementoClicado.classList.add("certo");
-                
-                if (pontuacao >= 50) {
-                    tempoRestante = Math.min(tempoRestante, 20);
-                }
-                
                 atualizarDisplay();
                 
                 setTimeout(() => {
@@ -113,11 +111,17 @@ function reconheceClick() {
                     iniciaRodada();
                 }, 500);
             } else {
+                clearInterval(intervalo);
+                intervalo = null;
+                
                 pontuacao = Math.max(0, pontuacao - 5);
+                tempoRestante = Math.max(0.1, tempoRestante - 6); 
                 elementoClicado.classList.add("errado");
                 atualizarDisplay();
+                
                 setTimeout(() => {
                     elementoClicado.classList.remove("errado");
+                    iniciarContador();
                     iniciaRodada();
                 }, 300);
             }
@@ -132,7 +136,11 @@ function iniciarJogo() {
         return;
     }
     
-    // Limpar ranking anterior se existir
+    if (btnReiniciar) {
+        btnReiniciar.remove();
+        btnReiniciar = null;
+    }
+    
     const rankingDiv = document.getElementById('ranking');
     if (rankingDiv) rankingDiv.remove();
     
@@ -153,7 +161,6 @@ function fimDeJogo() {
 
     alert(`${playerName}, sua pontuação final: ${pontuacao}`);
     
-    // Salvar no ranking
     const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
     ranking.push({
         nome: playerName,
@@ -164,24 +171,30 @@ function fimDeJogo() {
     ranking.sort((a, b) => b.pontos - a.pontos);
     localStorage.setItem('ranking', JSON.stringify(ranking.slice(0, 10)));
     
-    // Mostrar ranking
     mostrarRanking();
     
     grids.forEach(grid => {
         grid.style.pointerEvents = 'none';
     });
 
-    const btnReiniciar = document.createElement('button');
-    btnReiniciar.textContent = "Jogar Novamente";
-    btnReiniciar.addEventListener('click', iniciarJogo);
-    document.querySelector('.container').appendChild(btnReiniciar);
+    if (!btnReiniciar) {
+        btnReiniciar = document.createElement('button');
+        btnReiniciar.textContent = "Jogar Novamente";
+        btnReiniciar.addEventListener('click', iniciarJogo);
+        document.querySelector('.container').appendChild(btnReiniciar);
+    }
 }
 
 function mostrarRanking() {
     const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    const rankingHTML = ranking.map((jogador, i) => 
-        `<li>${i+1}. ${jogador.nome} - ${jogador.pontos} pontos (${jogador.data})</li>`
-    ).join('');
+    const rankingHTML = ranking.map((jogador, i) => {
+        let medalha = '';
+        if (i === 0) medalha = '🥇';
+        else if (i === 1) medalha = '🥈';
+        else if (i === 2) medalha = '🥉';
+        
+        return `<li>${medalha} ${jogador.nome} - ${jogador.pontos} pontos (${jogador.data})</li>`;
+    }).join('');
     
     const rankingDiv = document.createElement('div');
     rankingDiv.id = 'ranking';
