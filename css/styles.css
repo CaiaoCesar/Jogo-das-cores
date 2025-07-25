@@ -26,6 +26,28 @@ h1{
     font-style: normal;
 }
 
+/* Adicionar ao styles.css */
+.player-name input {
+    padding: 10px;
+    font-size: 1em;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+}
+
+#ranking {
+    background: rgba(0,0,0,0.7);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px auto;
+    max-width: 500px;
+}
+
+#ranking ol {
+    text-align: left;
+    font-family: 'Zen Dots', sans-serif;
+}
+
 button{
     display: flexbox;
     border-radius: 15px;

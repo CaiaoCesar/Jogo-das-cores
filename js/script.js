@@ -4,6 +4,7 @@ let tempoRestante = 30;
 let intervalo = null;
 let corAlvo = null;
 let jogoAtivo = false;
+let playerName = "";
 
 // Elementos DOM
 const displayPontuacao = document.querySelector('.score h2');
@@ -26,13 +27,14 @@ const traducoes = {
 };
 
 function sorteiaCor() {
-    const misturaCores = [...cores].sort(() => Math.random() - 0.5);
-    return misturaCores[0];
+    return cores[Math.floor(Math.random() * cores.length)];
 }
 
 function adicionaCoresGrid() {
     corAlvo = sorteiaCor();
-    let coresGrid = [...cores].sort(() => Math.random() - 0.5).slice(0, 8);
+    let coresGrid = [...cores].filter(c => c !== corAlvo)
+                          .sort(() => Math.random() - 0.5)
+                          .slice(0, 8);
     coresGrid.push(corAlvo);
     coresGrid = coresGrid.sort(() => Math.random() - 0.5);
 
@@ -43,9 +45,7 @@ function adicionaCoresGrid() {
 }
 
 function iniciarContador() {
-    if (intervalo) {
-        clearInterval(intervalo);
-    }
+    if (intervalo) clearInterval(intervalo);
     
     intervalo = setInterval(() => {
         tempoRestante -= 0.1;
@@ -77,7 +77,6 @@ function iniciaRodada() {
     jogoAtivo = true;
     adicionaCoresGrid();
     
-    // Só inicia o contador se não estiver ativo
     if (!intervalo) {
         iniciarContador();
     }
@@ -103,7 +102,6 @@ function reconheceClick() {
                 pontuacao += 10;
                 elementoClicado.classList.add("certo");
                 
-                // Ajuste de dificuldade após 50 pontos
                 if (pontuacao >= 50) {
                     tempoRestante = Math.min(tempoRestante, 20);
                 }
@@ -112,13 +110,15 @@ function reconheceClick() {
                 
                 setTimeout(() => {
                     elementoClicado.classList.remove("certo");
-                    iniciaRodada(); // Continua com o mesmo tempo
+                    iniciaRodada();
                 }, 500);
             } else {
+                pontuacao = Math.max(0, pontuacao - 5);
                 elementoClicado.classList.add("errado");
+                atualizarDisplay();
                 setTimeout(() => {
                     elementoClicado.classList.remove("errado");
-                    fimDeJogo();
+                    iniciaRodada();
                 }, 300);
             }
         });
@@ -126,6 +126,16 @@ function reconheceClick() {
 }
 
 function iniciarJogo() {
+    playerName = document.getElementById('playerName').value || "Jogador";
+    if (!playerName.trim()) {
+        alert("Por favor, digite seu nome!");
+        return;
+    }
+    
+    // Limpar ranking anterior se existir
+    const rankingDiv = document.getElementById('ranking');
+    if (rankingDiv) rankingDiv.remove();
+    
     pontuacao = 0;
     tempoRestante = 30;
     clearInterval(intervalo);
@@ -141,7 +151,21 @@ function fimDeJogo() {
     clearInterval(intervalo);
     intervalo = null;
 
-    alert(`Fim de jogo! Sua pontuação final: ${pontuacao}`);
+    alert(`${playerName}, sua pontuação final: ${pontuacao}`);
+    
+    // Salvar no ranking
+    const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
+    ranking.push({
+        nome: playerName,
+        pontos: pontuacao,
+        data: new Date().toLocaleDateString()
+    });
+    
+    ranking.sort((a, b) => b.pontos - a.pontos);
+    localStorage.setItem('ranking', JSON.stringify(ranking.slice(0, 10)));
+    
+    // Mostrar ranking
+    mostrarRanking();
     
     grids.forEach(grid => {
         grid.style.pointerEvents = 'none';
@@ -153,5 +177,14 @@ function fimDeJogo() {
     document.querySelector('.container').appendChild(btnReiniciar);
 }
 
-// Inicia o jogo quando a página carrega
-window.onload = iniciarJogo;
+function mostrarRanking() {
+    const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
+    const rankingHTML = ranking.map((jogador, i) => 
+        `<li>${i+1}. ${jogador.nome} - ${jogador.pontos} pontos (${jogador.data})</li>`
+    ).join('');
+    
+    const rankingDiv = document.createElement('div');
+    rankingDiv.id = 'ranking';
+    rankingDiv.innerHTML = `<h3>Top 10 Jogadores</h3><ol>${rankingHTML}</ol>`;
+    document.querySelector('.container').appendChild(rankingDiv);
+}
