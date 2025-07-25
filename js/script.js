@@ -3,11 +3,13 @@ let pontuacao = 0;
 let tempoRestante = 10; // Tempo inicial em segundos
 let intervalo = null;
 let corAlvo = null;
+let corGrid= null; 
 
 // Elementos DOM
 const displayPontuacao = document.querySelector('.score h2');
 const displayTempo = document.querySelector('.timer h2');
 const displayCorAlvo = document.querySelector('.chosen-color h2');
+const displayCorGrid = document.querySelector("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9");
 
 const grids = [...document.querySelectorAll("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9")];
 
@@ -35,8 +37,36 @@ function sorteiaCor(){
     return corAlvo;
 }
 
+function adicionaCoresGrid(){
+    corAlvo = sorteiaCor();
+
+    let coresGrid = [...cores].sort(() => Math.random() - 0.5).slice(0, 8);
+    coresGrid.push(corAlvo);
+    coresGrid = coresGrid.sort(() => Math.random() - 0.5);
+
+    grids.forEach((grid, i) =>{
+        grid.style.backgroundColor = coresGrid[i];
+    });
+}
+
+
+function confirmaAcerto(corClicada) {
+    if (corClicada === corAlvo){
+        pontuacao += 10;
+        atualizarDisplay();
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
 // Contador regressivo
 function iniciarContador() {
+    if (intervalo) {
+        clearInterval(intervalo);
+    }
+
     tempoRestante = 10;
     atualizarDisplay();
     
@@ -64,17 +94,37 @@ function atualizarDisplay() {
     } else {
         displayCorAlvo.style.textShadow = 'none';
     }
+
+    displayCorGrid.style.color = corGrid;
 }
 
+function iniciaRodada(){
+    adicionaCoresGrid();
+    iniciarContador();
+    atualizarDisplay();
+}
 
 function reconheceClick(){
     grids.forEach((elemento) =>{
         elemento.addEventListener("click", (evt)=>{
             const elementoClicado = evt.target;
-            elementoClicado.classList.add("selected"); 
-            console.log(elementoClicado.id + " foi clicado");
-        })
-    })
+            const corClicada = elementoClicado.style.backgroundColor;
+
+            if(confirmaAcerto(corClicada)){
+                elementoClicado.classList.add("Correto 👍🏾!"); 
+                setTimeout(() =>{
+                    iniciarRodada();
+                }, 500)
+            }
+            else{
+                elementoClicado.classList.add("Errou 🤦🏾‍♂️!"); 
+            }
+            
+            setTimeout(() =>{
+                elementoClicado.classList.remove("selected", "Correto", "Erro");
+            }, 300);
+        });
+    });
 }
 
 function atualizaRanking(){
@@ -99,53 +149,21 @@ function salvaPontuação(){
 }
 
 function iniciarJogo(){
-    iniciarContador();
-    corAlvo = sorteiaCor();
-    reconheceClick();
-    atualizarDisplay();
+    pontuacao = 0;
+    iniciaRodada();
     atualizaRanking();
 }
 
 function fimDeJogo() {
     alert(`Fim de jogo! Sua pontuação final: ${pontuacao}`);
     salvaPontuação();
+
+    grids.forEach(grid => {
+        grid.replaceWith(grid.cloneNode(true));
+    });    
+
     // Reinicia o jogo
     pontuacao = 0;
     iniciarJogo();
 }
 
-
-/*
-const listaCores = [...document.querySelectorAll(":root")];
-
-const misturaCores = [...lista].sort(() => Math.random() - 0.5);
-
-for (let i = 0; i < Math.min(9, misturaCores.length); i++) {
-    const cor = misturaCores[i];
-}
-
-
-/*
-let cores = document.documentElement;
-const cor = getComputedStyle(cores);
-
-const listaCores = cor.cssText.split(';').map(name => name.trim()).filter(Boolean);
-const variaveis = listaCores.filter(name => name.startsWith('--'));
-console.log(variaveis);
-
-
-/*
-
-/*
-let cores = document.documentElement;
-const cor = getComputedStyle(cores);
-const listaCores= Array.from(cor).filter(name => name.startsWith('--'));
-
-console.log(listaCores);
-*/
-
-/*
-let cores = document.documentElement;
-const cor = getComputedStyle(cores).getPropertyValue('root');
-console.log(cor); 
-*/
