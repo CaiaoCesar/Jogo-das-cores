@@ -1,74 +1,51 @@
 // Variáveis do jogo
 let pontuacao = 0;
-let tempoRestante = 10; // Tempo inicial em segundos
+let tempoRestante = 30;
 let intervalo = null;
 let corAlvo = null;
-let corGrid= null; 
+let jogoAtivo = false;
 
 // Elementos DOM
 const displayPontuacao = document.querySelector('.score h2');
 const displayTempo = document.querySelector('.timer h2');
 const displayCorAlvo = document.querySelector('.chosen-color h2');
-const displayCorGrid = document.querySelector("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9");
-
 const grids = [...document.querySelectorAll("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9")];
 
-const cores = ['yellow', 'blue', 'darkblue', 'red', 'black', 'brown', 'green', 'darkgreen', 'orange', 'white', 'gray', 'purple', 'pink'] 
+const cores = ['yellow', 'blue', 'red', 'brown', 'green', 'orange', 'white', 'gray', 'pink'];
 
 const traducoes = {
     'yellow': 'amarelo',
     'blue': 'azul',
-    'darkblue': 'azul escuro',
     'red': 'vermelho',
-    'black': 'preto',
     'brown': 'marrom',
     'green': 'verde',
-    'darkgreen': 'verde escuro',
     'orange': 'laranja',
     'white': 'branco',
     'gray': 'cinza',
-    'purple': 'roxo',
     'pink': 'rosa'
 };
 
-function sorteiaCor(){
+function sorteiaCor() {
     const misturaCores = [...cores].sort(() => Math.random() - 0.5);
-    corAlvo = misturaCores[0];
-    return corAlvo;
+    return misturaCores[0];
 }
 
-function adicionaCoresGrid(){
+function adicionaCoresGrid() {
     corAlvo = sorteiaCor();
-
     let coresGrid = [...cores].sort(() => Math.random() - 0.5).slice(0, 8);
     coresGrid.push(corAlvo);
     coresGrid = coresGrid.sort(() => Math.random() - 0.5);
 
-    grids.forEach((grid, i) =>{
+    grids.forEach((grid, i) => {
         grid.style.backgroundColor = coresGrid[i];
+        grid.dataset.cor = coresGrid[i];
     });
 }
 
-
-function confirmaAcerto(corClicada) {
-    if (corClicada === corAlvo){
-        pontuacao += 10;
-        atualizarDisplay();
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
-// Contador regressivo
 function iniciarContador() {
     if (intervalo) {
         clearInterval(intervalo);
     }
-
-    tempoRestante = 10;
-    atualizarDisplay();
     
     intervalo = setInterval(() => {
         tempoRestante -= 0.1;
@@ -94,76 +71,87 @@ function atualizarDisplay() {
     } else {
         displayCorAlvo.style.textShadow = 'none';
     }
-
-    displayCorGrid.style.color = corGrid;
 }
 
-function iniciaRodada(){
+function iniciaRodada() {
+    jogoAtivo = true;
     adicionaCoresGrid();
-    iniciarContador();
+    
+    // Só inicia o contador se não estiver ativo
+    if (!intervalo) {
+        iniciarContador();
+    }
+    
     atualizarDisplay();
 }
 
-function reconheceClick(){
-    grids.forEach((elemento) =>{
-        elemento.addEventListener("click", (evt)=>{
-            const elementoClicado = evt.target;
-            const corClicada = elementoClicado.style.backgroundColor;
+function reconheceClick() {
+    grids.forEach(grid => {
+        grid.replaceWith(grid.cloneNode(true));
+    });
 
-            if(confirmaAcerto(corClicada)){
-                elementoClicado.classList.add("Correto 👍🏾!"); 
-                setTimeout(() =>{
-                    iniciarRodada();
-                }, 500)
-            }
-            else{
-                elementoClicado.classList.add("Errou 🤦🏾‍♂️!"); 
-            }
+    const freshGrids = [...document.querySelectorAll("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9")];
+
+    freshGrids.forEach((elemento) => {
+        elemento.addEventListener("click", (evt) => {
+            if (!jogoAtivo) return;
             
-            setTimeout(() =>{
-                elementoClicado.classList.remove("selected", "Correto", "Erro");
-            }, 300);
+            const elementoClicado = evt.target;
+            const corClicada = elementoClicado.dataset.cor;
+            
+            if (corClicada === corAlvo) {
+                pontuacao += 10;
+                elementoClicado.classList.add("certo");
+                
+                // Ajuste de dificuldade após 50 pontos
+                if (pontuacao >= 50) {
+                    tempoRestante = Math.min(tempoRestante, 20);
+                }
+                
+                atualizarDisplay();
+                
+                setTimeout(() => {
+                    elementoClicado.classList.remove("certo");
+                    iniciaRodada(); // Continua com o mesmo tempo
+                }, 500);
+            } else {
+                elementoClicado.classList.add("errado");
+                setTimeout(() => {
+                    elementoClicado.classList.remove("errado");
+                    fimDeJogo();
+                }, 300);
+            }
         });
     });
 }
 
-function atualizaRanking(){
-    const ranking = JSON.parse(localStorage.getItem('Ranking') || []);
-    const listaRanking = document.getElementById('ranking-list');
-    rankingList.innerHTML = '';
-
-    ranking.forEach(( item => {
-        const li = document.createElement('li');
-        li.textContent = `${item.pontuacao}`;
-        listaRanking.appendChild(li);
-    }))
-}
-
-function salvaPontuação(){
-    const ranking = JSON.parse(localStorage.getItem('Ranking') || []);
-    ranking.push({pontuacao: pontuacao});
-
-    //seleciona as 10 melhores pontuações
-    ranking.sort((a, b) => b.pontuacao - a.pontuacao);
-    localStorage.setItem('ranking', JSON.stringify(ranking.slice(0, 10)));
-}
-
-function iniciarJogo(){
+function iniciarJogo() {
     pontuacao = 0;
+    tempoRestante = 30;
+    clearInterval(intervalo);
+    intervalo = null;
+    jogoAtivo = true;
+    
     iniciaRodada();
-    atualizaRanking();
+    reconheceClick();
 }
 
 function fimDeJogo() {
+    jogoAtivo = false;
+    clearInterval(intervalo);
+    intervalo = null;
+
     alert(`Fim de jogo! Sua pontuação final: ${pontuacao}`);
-    salvaPontuação();
-
+    
     grids.forEach(grid => {
-        grid.replaceWith(grid.cloneNode(true));
-    });    
+        grid.style.pointerEvents = 'none';
+    });
 
-    // Reinicia o jogo
-    pontuacao = 0;
-    iniciarJogo();
+    const btnReiniciar = document.createElement('button');
+    btnReiniciar.textContent = "Jogar Novamente";
+    btnReiniciar.addEventListener('click', iniciarJogo);
+    document.querySelector('.container').appendChild(btnReiniciar);
 }
 
+// Inicia o jogo quando a página carrega
+window.onload = iniciarJogo;

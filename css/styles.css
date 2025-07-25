@@ -3,25 +3,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Bungee+Spice&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Maps&display=swap');
 
-/*
-:root {
-    --amarelo: yellow;
-    --azul: blue; 
-    --azulEscuro: darkblue;
-    --vermelho: red; 
-    --preto: black; 
-    --marrom: brown; 
-    --verde: green; 
-    --verdeEscuro: darkgreen; 
-    --laranja: orange; 
-    --branco: white;
-    --cinza: gray; 
-    --roxo: purple; 
-    --rosa: pink; 
-    
-}
-*/
-
 .container{
     margin: 0 auto;
     padding: 0;
@@ -54,6 +35,13 @@ button{
     font-family: "Rubik Maps", system-ui;
     font-weight: 400;
     font-style: normal;
+}
+
+
+button:hover {
+    background-color: #5f6b5f;
+    transform: scale(1.05);
+    color: white;
 }
 
 .score, .timer{
@@ -95,11 +83,17 @@ button{
     transform: translate(-2px);
 }
 
+.certo {
+    transform: scale(0.95);
+    box-shadow: 0 0 15px green;
+}
+
+.errado{
+    transform: scale(0.95);
+    box-shadow: 0 0 15px red;
+}
+
 .selected:hover {
     border-color: darkgoldenrod;
     transform: translateX(-2px) scale(1.02);
-}
-
-.azul{
-    color: blue;
 }
