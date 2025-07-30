@@ -1,203 +1,277 @@
-// Variáveis do jogo
-let pontuacao = 0;
-let tempoRestante = 30;
-let intervalo = null;
-let corAlvo = null;
-let jogoAtivo = false;
-let playerName = "";
-let btnReiniciar = null;
-
-// Elementos DOM
-const displayPontuacao = document.querySelector('.score h2');
-const displayTempo = document.querySelector('.timer h2');
-const displayCorAlvo = document.querySelector('.chosen-color h2');
-const grids = [...document.querySelectorAll("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9")];
-
-// Dados das Cores
-const cores = ['yellow', 'blue', 'red', 'brown', 'green', 'orange', 'white', 'gray', 'pink'];
-
-const traducoes = {
-    'yellow': 'amarelo',
-    'blue': 'azul',
-    'red': 'vermelho',
-    'brown': 'marrom',
-    'green': 'verde',
-    'orange': 'laranja',
-    'white': 'branco',
-    'gray': 'cinza',
-    'pink': 'rosa'
-};
-
-//Funções do Jogo
-function sorteiaCor() {
-    return cores[Math.floor(Math.random() * cores.length)];
-}
-
-function adicionaCoresGrid() {
-    corAlvo = sorteiaCor();
-    let coresGrid = [...cores].filter(c => c !== corAlvo)
-                          .sort(() => Math.random() - 0.5)
-                          .slice(0, 8);
-    coresGrid.push(corAlvo);
-    coresGrid = coresGrid.sort(() => Math.random() - 0.5);
-
-    grids.forEach((grid, i) => {
-        grid.style.backgroundColor = coresGrid[i];
-        grid.dataset.cor = coresGrid[i];
-    });
-}
-
-function iniciarContador() {
-    if (intervalo) clearInterval(intervalo);
-    
-    intervalo = setInterval(() => {
-        tempoRestante -= 0.1;
-        atualizarDisplay();
-        
-        if (tempoRestante <= 0) {
-            clearInterval(intervalo);
-            fimDeJogo();
-        }
-    }, 100);
-}
-
-function atualizarDisplay() {
-    displayTempo.textContent = `Tempo Restante: ${tempoRestante.toFixed(1)}s`;
-    displayPontuacao.textContent = `Pontuação: ${pontuacao}`;
-    
-    const nomeCorTraduzido = traducoes[corAlvo] || corAlvo;
-    displayCorAlvo.textContent = `A cor escolhida agora é: ${nomeCorTraduzido}`;
-    displayCorAlvo.style.color = corAlvo;
-
-    if (['white', 'yellow', 'pink'].includes(corAlvo)) {
-        displayCorAlvo.style.textShadow = '1px 1px 2px rgba(0,0,0,0.8)';
-    } else {
-        displayCorAlvo.style.textShadow = 'none';
-    }
-}
-
-function iniciaRodada() {
-    jogoAtivo = true;
-    adicionaCoresGrid();
-    
-    if (!intervalo) {
-        iniciarContador();
-    }
-    
-    atualizarDisplay();
-}
-
-function reconheceClick() {
-    grids.forEach(grid => {
-        grid.replaceWith(grid.cloneNode(true));
-    });
-
-    const freshGrids = [...document.querySelectorAll("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9")];
-
-    freshGrids.forEach((elemento) => {
-        elemento.addEventListener("click", (evt) => {
-            if (!jogoAtivo) return;
-            
-            const elementoClicado = evt.target;
-            const corClicada = elementoClicado.dataset.cor;
-            
-            if (corClicada === corAlvo) {
-                pontuacao += 10;
-                elementoClicado.classList.add("certo");
-                atualizarDisplay();
-                
-                setTimeout(() => {
-                    elementoClicado.classList.remove("certo");
-                    iniciaRodada();
-                }, 500);
-            } else {
-                clearInterval(intervalo);
-                intervalo = null;
-                
-                pontuacao = Math.max(0, pontuacao - 5);
-                tempoRestante = Math.max(0.1, tempoRestante - 6); 
-                elementoClicado.classList.add("errado");
-                atualizarDisplay();
-                
-                setTimeout(() => {
-                    elementoClicado.classList.remove("errado");
-                    iniciarContador();
-                    iniciaRodada();
-                }, 300);
+// script.js - Versão melhorada mantendo seu design
+class ColorGame {
+    constructor() {
+        // Configurações do jogo (adaptadas para seu design)
+        this.config = {
+            initialTime: 30,
+            timePenalty: 6,    // Como no seu código original
+            scoreCorrect: 10,   // Como no seu código original
+            scoreWrong: -5,     // Como no seu código original
+            colors: ['yellow', 'blue', 'red', 'brown', 'green', 'orangered', 'white', 'darkgray', 'purple'],
+            traducoes: {
+                'yellow': 'amarelo',
+                'blue': 'azul',
+                'red': 'vermelho',
+                'brown': 'marrom',
+                'green': 'verde',
+                'orangered': 'laranja',
+                'white': 'branco',
+                'darkgray': 'cinza',
+                'purple': 'roxo'
             }
+        };
+
+        // Estado do jogo
+        this.state = {
+            score: 0,
+            timeLeft: this.config.initialTime,
+            isPlaying: false,
+            playerName: '',
+            targetColor: null,
+            timerInterval: null
+        };
+
+        // Elementos DOM (usando seus seletores)
+        this.elements = {
+            playerName: document.getElementById('playerName'),
+            displayPontuacao: document.querySelector('.score h2'),
+            displayTempo: document.querySelector('.timer h2'),
+            displayCorAlvo: document.querySelector('.chosen-color h2'),
+            grids: [...document.querySelectorAll("#grid1, #grid2, #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9")]
+        };
+
+        // Inicializa os eventos
+        document.querySelector('.btn-start button').addEventListener('click', () => this.startGame());
+    }
+
+    startGame() {
+        const name = this.elements.playerName.value.trim() || "Jogador";
+        if (!name.trim()) {
+            alert("Por favor, digite seu nome!");
+            return;
+        }
+
+        // Remove o ranking anterior se existir
+        const rankingDiv = document.getElementById('ranking');
+        if (rankingDiv) rankingDiv.remove();
+
+        // Remove o botão de reiniciar se existir
+        if (this.btnReiniciar) {
+            this.btnReiniciar.remove();
+            this.btnReiniciar = null;
+        }
+
+        // Reinicia o estado do jogo
+        this.state = {
+            score: 0,
+            timeLeft: this.config.initialTime,
+            isPlaying: true,
+            playerName: name,
+            targetColor: null,
+            timerInterval: null
+        };
+
+        // Ativa os grids
+        this.elements.grids.forEach(grid => {
+            grid.style.pointerEvents = 'auto';
         });
-    });
-}
 
-function iniciarJogo() {
-    playerName = document.getElementById('playerName').value || "Jogador";
-    if (!playerName.trim()) {
-        alert("Por favor, digite seu nome!");
-        return;
+        // Inicia a primeira rodada
+        this.startNewRound();
+
+        // Inicia o timer
+        this.startTimer();
     }
-    
-    if (btnReiniciar) {
-        btnReiniciar.remove();
-        btnReiniciar = null;
-    }
-    
-    const rankingDiv = document.getElementById('ranking');
-    if (rankingDiv) rankingDiv.remove();
-    
-    pontuacao = 0;
-    tempoRestante = 30;
-    clearInterval(intervalo);
-    intervalo = null;
-    jogoAtivo = true;
-    
-    iniciaRodada();
-    reconheceClick();
-}
 
-function fimDeJogo() {
-    jogoAtivo = false;
-    clearInterval(intervalo);
-    intervalo = null;
-
-    alert(`${playerName}, sua pontuação final: ${pontuacao}`);
-    
-    const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    ranking.push({
-        nome: playerName,
-        pontos: pontuacao,
-        data: new Date().toLocaleDateString()
-    });
-    
-    ranking.sort((a, b) => b.pontos - a.pontos);
-    localStorage.setItem('ranking', JSON.stringify(ranking.slice(0, 10)));
-    
-    mostrarRanking();
-    
-    grids.forEach(grid => {
-        grid.style.pointerEvents = 'none';
-    });
-
-    if (!btnReiniciar) {
-        btnReiniciar = document.createElement('button');
-        btnReiniciar.textContent = "Jogar Novamente";
-        btnReiniciar.addEventListener('click', iniciarJogo);
-        document.querySelector('.container').appendChild(btnReiniciar);
-    }
-}
-
-function mostrarRanking() {
-    const ranking = JSON.parse(localStorage.getItem('ranking')) || [];
-    const rankingHTML = ranking.map((jogador, i) => {
-        let medalha = '';
-        if (i === 0) medalha = '🥇';
-        else if (i === 1) medalha = '🥈';
-        else if (i === 2) medalha = '🥉';
+    startNewRound() {
+        // Sorteia nova cor alvo
+        this.state.targetColor = this.getRandomColor();
         
-        return `<li>${medalha} ${jogador.nome} - ${jogador.pontos} pontos (${jogador.data})</li>`;
-    }).join('');
-    
-    const rankingDiv = document.createElement('div');
-    rankingDiv.id = 'ranking';
-    rankingDiv.innerHTML = `<h3>Top 10 Jogadores</h3><ol>${rankingHTML}</ol>`;
-    document.querySelector('.container').appendChild(rankingDiv);
+        // Atualiza a exibição
+        this.updateDisplay();
+        
+        // Preenche os grids com cores
+        this.fillGridWithColors();
+    }
+
+    getRandomColor() {
+        const randomIndex = Math.floor(Math.random() * this.config.colors.length);
+        return {
+            value: this.config.colors[randomIndex],
+            name: this.config.traducoes[this.config.colors[randomIndex]] || this.config.colors[randomIndex]
+        };
+    }
+
+    fillGridWithColors() {
+        // Filtra cores diferentes da alvo
+        let coresDisponiveis = this.config.colors.filter(c => c !== this.state.targetColor.value);
+        
+        // Embaralha
+        coresDisponiveis = coresDisponiveis.sort(() => Math.random() - 0.5);
+        
+        // Pega 8 cores aleatórias (pode conter repetições)
+        let coresGrid = [];
+        for (let i = 0; i < 8; i++) {
+            coresGrid.push(coresDisponiveis[Math.floor(Math.random() * coresDisponiveis.length)]);
+        }
+        
+        // Garante que a corAlvo esteja presente
+        coresGrid.push(this.state.targetColor.value);
+        
+        // Embaralha novamente
+        coresGrid = coresGrid.sort(() => Math.random() - 0.5);
+
+        // Aplica as cores aos grids
+        this.elements.grids.forEach((grid, i) => {
+            grid.style.backgroundColor = coresGrid[i];
+            grid.dataset.cor = coresGrid[i];
+            
+            // Remove classes de estado anterior
+            grid.classList.remove("certo", "errado");
+            
+            // Adiciona o event listener (substitui o antigo)
+            grid.onclick = (e) => this.handleGridClick(e);
+        });
+    }
+
+    handleGridClick(event) {
+        if (!this.state.isPlaying) return;
+
+        const elementoClicado = event.target;
+        const corClicada = elementoClicado.dataset.cor;
+        const isCorrect = corClicada === this.state.targetColor.value;
+
+        if (isCorrect) {
+            // Acertou
+            this.state.score += this.config.scoreCorrect;
+            elementoClicado.classList.add("certo");
+        } else {
+            // Errou
+            this.state.score = Math.max(0, this.state.score + this.config.scoreWrong);
+            this.state.timeLeft = Math.max(0.1, this.state.timeLeft - this.config.timePenalty);
+            elementoClicado.classList.add("errado");
+        }
+
+        // Atualiza displays
+        this.updateDisplay();
+
+        // Remove classes de feedback após animação
+        setTimeout(() => {
+            elementoClicado.classList.remove("certo", "errado");
+            
+            if (isCorrect) {
+                this.startNewRound();
+            } else {
+                this.checkGameOver();
+            }
+        }, 300);
+    }
+
+    startTimer() {
+        clearInterval(this.state.timerInterval);
+        
+        this.state.timerInterval = setInterval(() => {
+            this.state.timeLeft -= 0.1;
+            this.updateDisplay();
+            
+            if (this.state.timeLeft <= 0) {
+                this.endGame();
+            }
+        }, 100);
+    }
+
+    updateDisplay() {
+        this.elements.displayTempo.textContent = `Tempo Restante: ${this.state.timeLeft.toFixed(1)}s`;
+        this.elements.displayPontuacao.textContent = `Pontuação: ${this.state.score}`;
+        
+        this.elements.displayCorAlvo.textContent = `A cor escolhida agora é: ${this.state.targetColor.name}`;
+        this.elements.displayCorAlvo.style.color = this.state.targetColor.value;
+
+        if (['white', 'yellow', 'pink'].includes(this.state.targetColor.value)) {
+            this.elements.displayCorAlvo.style.textShadow = '1px 1px 2px rgba(0,0,0,0.8)';
+        } else {
+            this.elements.displayCorAlvo.style.textShadow = 'none';
+        }
+    }
+
+    checkGameOver() {
+        if (this.state.timeLeft <= 0) {
+            this.endGame();
+        }
+    }
+
+    endGame() {
+        this.state.isPlaying = false;
+        clearInterval(this.state.timerInterval);
+
+        // Mostra alerta com pontuação
+        alert(`${this.state.playerName}, sua pontuação final: ${this.state.score}`);
+        
+        // Atualiza ranking
+        this.updateRanking();
+        
+        // Desativa os grids
+        this.elements.grids.forEach(grid => {
+            grid.style.pointerEvents = 'none';
+        });
+
+        // Adiciona botão de reiniciar
+        this.addRestartButton();
+    }
+
+    updateRanking() {
+        let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
+        
+        ranking.push({
+            nome: this.state.playerName,
+            pontos: this.state.score,
+            data: new Date().toLocaleDateString()
+        });
+
+        // Ordena por pontuação (maior primeiro)
+        ranking.sort((a, b) => b.pontos - a.pontos);
+        
+        // Mantém apenas os top 10
+        ranking = ranking.slice(0, 10);
+        
+        // Salva no localStorage
+        localStorage.setItem('ranking', JSON.stringify(ranking));
+        
+        // Exibe o ranking
+        this.displayRanking(ranking);
+    }
+
+    displayRanking(ranking) {
+        let html = '<h3>Top 10 Jogadores</h3><ol>';
+        
+        ranking.forEach((player, index) => {
+            let medalha = '';
+            if (index === 0) medalha = '🥇';
+            else if (index === 1) medalha = '🥈';
+            else if (index === 2) medalha = '🥉';
+            
+            html += `<li>${medalha} ${player.nome} - ${player.pontos} pontos (${player.data})</li>`;
+        });
+        
+        html += '</ol>';
+        
+        const rankingDiv = document.createElement('div');
+        rankingDiv.id = 'ranking';
+        rankingDiv.innerHTML = html;
+        document.querySelector('.container').appendChild(rankingDiv);
+    }
+
+    addRestartButton() {
+        this.btnReiniciar = document.createElement('button');
+        this.btnReiniciar.textContent = "Jogar Novamente";
+        this.btnReiniciar.addEventListener('click', () => this.startGame());
+        this.btnReiniciar.style.margin = '20px auto';
+        this.btnReiniciar.style.display = 'block';
+        document.querySelector('.container').appendChild(this.btnReiniciar);
+    }
 }
+
+// Inicia o jogo quando a página carregar
+document.addEventListener('DOMContentLoaded', () => {
+    new ColorGame();
+});
