@@ -4,34 +4,40 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Maps&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Rubik+Spray+Paint&display=swap');
 
-.container{
+/* Estilos base (mobile first) */
+.container {
     margin: 0 auto;
-    padding: 0;
+    padding: 15px;
     background-color: rgb(6, 43, 50);
     color: silver;
-    font-size: 1.5em;
-    display: flexbox;
+    font-size: 1em;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
     text-align: center;
     font-family: "Bungee Spice", sans-serif;
     font-weight: 400;
     font-style: normal;
+    min-height: 100vh;
+    box-sizing: border-box;
 }
 
-h1{
-    justify-content: center;
+h1 {
     text-align: center;
-    font-size: 3em;
+    font-size: 2em;
     font-family: "Rubik Maps", system-ui;
     font-weight: 400;
     font-style: normal;
+    margin: 0.5em 0;
 }
 
 .namePlayer input {
     height: 2em;
-    width: 8em;
+    width: 80%;
+    max-width: 300px;
     padding: 10px;
-    font-size: 1.5em;
+    font-size: 1em;
     font-family: "Jersey 15", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -41,17 +47,18 @@ h1{
     border: none;
 }
 
-button{
-    display: flexbox;
+button {
+    display: inline-block;
     border-radius: 15px;
     width: 7em;
     height: 2.8em;
-    font-size: 1.2em;
+    font-size: 1em;
     font-family: "Rubik Maps", system-ui;
     font-weight: 400;
     font-style: normal;
+    margin: 10px 0;
+    cursor: pointer;
 }
-
 
 button:hover {
     background-color: #5f6b5f;
@@ -59,42 +66,47 @@ button:hover {
     color: white;
 }
 
-.score, .timer{
-    font-size: 1em;
+.score, .timer {
+    font-size: 0.9em;
     font-family: "Zen Dots", sans-serif;
     font-weight: 400;
     font-style: normal;
+    margin: 5px 0;
 }
 
-.chosen-color{
+.chosen-color {
     font-family: "Jersey 15", sans-serif;
     font-weight: 400;
     font-style: normal;
+    margin: 10px 0;
 }
 
 .chosen-color h2 {
     transition: color 0.3s ease;
-}
-
-.chosen-color h2 {
     text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+    font-size: 1em;
+    margin: 0.5em 0;
 }
 
-.game-arena{
+.game-arena {
     display: grid;
-    grid-template-columns: 130px 130px 130px;
-    grid-template-rows: 130px 130px 130px 20px;
-    justify-content: center;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 10px;
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
 }
 
-#grid1, #grid2,  #grid3, #grid4, #grid5, #grid6, #grid7, #grid8, #grid9{
-    background-color:rgb(6, 53, 54);
-    border: 10px solid rgb(5, 5, 5);
+.game-arena > div {
+    aspect-ratio: 1;
+    background-color: rgb(6, 53, 54);
+    border: 6px solid rgb(5, 5, 5);
     border-radius: 10px;
+    transition: all 0.2s ease;
 }
 
-.selected{
-    border: 12px solid white;
+.selected {
+    border: 8px solid white;
     transform: translate(-2px);
 }
 
@@ -103,49 +115,53 @@ button:hover {
     box-shadow: 0 0 15px green;
 }
 
-.errado{
+.errado {
     transform: scale(0.95);
     box-shadow: 0 0 15px red;
 }
 
-.selected:hover {
+.game-arena > div:hover {
     border-color: darkgoldenrod;
     transform: translateX(-2px) scale(1.02);
 }
-
 
 #ranking {
     background: rgba(0,0,0,0.7);
     padding: 15px;
     border-radius: 10px;
     margin: 20px auto;
+    width: 90%;
     max-width: 500px;
 }
 
 #ranking ol {
     text-align: left;
     font-family: 'Zen Dots', sans-serif;
+    padding-left: 20px;
 }
 
 #ranking li:nth-child(1) {
-    background: rgba(255, 215, 0, 0.2); /* Ouro */
-    font-size: 1.3em;
+    background: rgba(255, 215, 0, 0.2);
+    font-size: 1.1em;
+    padding: 5px;
 }
 
 #ranking li:nth-child(2) {
-    background: rgba(192, 192, 192, 0.2); /* Prata */
+    background: rgba(192, 192, 192, 0.2);
+    padding: 5px;
 }
 
 #ranking li:nth-child(3) {
-    background: rgba(205, 127, 50, 0.2); /* Bronze */
+    background: rgba(205, 127, 50, 0.2);
+    padding: 5px;
 }
 
-
-h4{
-  font-family: "Rubik Spray Paint", system-ui;
-  font-weight: 400;
-  font-style: normal;
-  color: gray;
+h4 {
+    font-family: "Rubik Spray Paint", system-ui;
+    font-weight: 400;
+    font-style: normal;
+    color: gray;
+    margin: 10px 0;
 }
 
 /* Media Queries para telas maiores */
