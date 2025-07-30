@@ -147,3 +147,61 @@ h4{
   font-style: normal;
   color: gray;
 }
+
+/* Media Queries para telas maiores */
+@media (min-width: 600px) {
+    .container {
+        font-size: 1.2em;
+        padding: 20px;
+    }
+    
+    h1 {
+        font-size: 2.5em;
+    }
+    
+    .chosen-color h2 {
+        font-size: 1.2em;
+    }
+    
+    .game-arena > div {
+        border-width: 8px;
+    }
+}
+
+@media (min-width: 900px) {
+    .container {
+        font-size: 1.5em;
+    }
+    
+    h1 {
+        font-size: 3em;
+    }
+    
+    .game-arena {
+        grid-gap: 15px;
+    }
+    
+    .game-arena > div {
+        border-width: 10px;
+    }
+}
+
+/* Ajustes para telas muito pequenas */
+@media (max-width: 400px) {
+    .container {
+        font-size: 0.9em;
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 1.8em;
+    }
+    
+    .game-arena {
+        grid-gap: 5px;
+    }
+    
+    .game-arena > div {
+        border-width: 4px;
+    }
+}
