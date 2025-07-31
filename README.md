@@ -67,11 +67,11 @@ O jogo está disponível em: [https://jogo-das-cores-ccos.vercel.app/]
 ### Opção 2: Localmente
 1. Clone este repositório:
    ```bash
-   git clone [https://github.com/CaiaoCesar/Jogo-das-cores.git]
-  ```
+     git clone [https://github.com/CaiaoCesar/Jogo-das-cores.git]
+   ```
 2. Navegue até a pasta do projeto:
   ```bash
-  cd Jogo-das-cores
+    cd Jogo-das-cores
   ```
 3. Abra o arquivo index.html no seu navegador de preferência.
 
