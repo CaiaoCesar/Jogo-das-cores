@@ -2,7 +2,7 @@
 
 **Desenvolvido por: Caio César Oliveira Silva** 
 
-Um jogo interativo de identificação de cores desenvolvido com HTML, CSS e JavaScript como parte de um desafio de programação web.
+Um jogo interativo de identificação de cores desenvolvido com HTML, CSS e JavaScript como parte de uma atividade de eventos d.o.m em programação web.
 
 ## 🕹️ Regras do Jogo
 
@@ -19,30 +19,33 @@ Um jogo interativo de identificação de cores desenvolvido com HTML, CSS e Java
   - Ao errar, o jogador continua com as mesmas cores
 - **Ranking** dos 10 melhores jogadores (armazenado localmente)
 
-Abra o arquivo index.html no seu navegador preferido
-
 ## ✨ Créditos e Referências
-Tutorial de Grid CSS: Medium - Creating a Gameboard with CSS Grid
 
-Manipulação de Eventos DOM: Alura - Eventos do DOM
+- **Tutorial de Grid CSS**:  
+  [Medium - Creating a Gameboard with CSS Grid](https://medium.com/@thewebdevg/creating-a-gameboard-with-css-grid-47da8ac25078)
 
-Vídeos de Referência:
+- **Manipulação de Eventos DOM**:  
+  [Alura - Eventos do DOM](https://www.alura.com.br/artigos/eventos-do-dom)
 
-YouTube - Tutorial de Jogo com JavaScript
+### Vídeos de Referência:
 
-YouTube - Lógica de Jogos em JS
+- **Tutorial de Jogo com JavaScript**:  
+  [YouTube - Tutorial Completo](https://youtu.be/DcN49TD7it0?si=8BM7PxFTXcCysXKj)
 
-Fontes Google:
+- **Lógica de Jogos em JS**:  
+  [YouTube - Lógica de Jogos](https://youtu.be/4vCBmu3z5FY?si=HrO-HrLgXaxPapKh)
 
-Bungee Spice
+### Fontes Google:
 
-Rubik Maps
+- Bungee Spice
 
-Jersey 15
+- Rubik Maps
 
-Zen Dots
+- Jersey 15
 
-Rubik Spray Paint
+- Zen Dots
+
+- Rubik Spray Paint
 
 ## 📜 Licença
 **Este projeto está licenciado sob a licença MIT - veja o arquivo LICENSE para detalhes.**
@@ -64,6 +67,12 @@ O jogo está disponível em: [https://jogo-das-cores-ccos.vercel.app/]
 ### Opção 2: Localmente
 1. Clone este repositório:
    ```bash
-   git clone [URL do repositório]
+   git clone [https://github.com/CaiaoCesar/Jogo-das-cores.git]
+  ```
+2. Navegue até a pasta do projeto:
+  ```bash
+  cd Jogo-das-cores
+  ```
+3. Abra o arquivo index.html no seu navegador de preferência.
 
 
